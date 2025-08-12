@@ -48,11 +48,17 @@ class InterfaceClient(client.OPNClient):
 
     def get_ndp(self):
         """Get NDP table for router."""
-        return self._get("diagnostics/interface/get_ndp")
+        if (self.api_version_pre_25_7):
+            return self._get("diagnostics/interface/getNdp")
+        else: 
+            return self._get("diagnostics/interface/get_ndp")
 
     def get_arp(self):
         """Get ARP table for router."""
-        return self._get("diagnostics/interface/get_arp")
+        if (self.api_version_pre_25_7):
+            return self._get("diagnostics/interface/getArp")
+        else: 
+            return self._get("diagnostics/interface/get_arp")
 
 
 class NetworkInsightClient(client.OPNClient):
@@ -66,15 +72,24 @@ class NetworkInsightClient(client.OPNClient):
 
     def get_interfaces(self):
         """Return the available interfaces."""
-        return self._get("diagnostics/networkinsight/get_interfaces")
+        if (self.api_version_pre_25_7):
+            return self._get("diagnostics/networkinsight/getinterfaces")
+        else:
+            return self._get("diagnostics/networkinsight/get_interfaces")
 
     def get_services(self):
         """Return the available services."""
-        return self._get("diagnostics/networkinsight/get_services")
+        if (self.api_version_pre_25_7):
+            return self._get("diagnostics/networkinsight/getservices")
+        else:        
+            return self._get("diagnostics/networkinsight/get_services")
 
     def get_protocols(self):
         """Return the protocols."""
-        return self._get("diagnostics/networkinsight/get_protocols")
+        if (self.api_version_pre_25_7):
+            return self._get("diagnostics/networkinsight/getprotocols")
+        else:
+            return self._get("diagnostics/networkinsight/get_protocols")
 
     def get_timeserie(self):
         """Return the time serie."""
@@ -92,13 +107,16 @@ class SystemHealthClient(client.OPNClient):
 
     def get_health_list(self):
         """Return the health list."""
-        return self._get("diagnostics/systemhealth/get_rrd_list")
+        if (self.api_version_pre_25_7):
+            return self._get("diagnostics/systemhealth/getRRDlist")
+        else:
+            return self._get("diagnostics/systemhealth/get_rrd_list")
 
     def get_health_data(
         self, metric, start=0, stop=0, maxitems=1024, inverse=False, details=False
     ):
         """Return the health data."""
-        url = ["diagnostics/systemhealth/get_system_health"]
+        url = ["diagnostics/systemhealth/getSystemHealth"] if self.api_version_pre_25_7 else ["diagnostics/systemhealth/get_system_health"]
         url.append(urllib.parse.quote(metric))
         url.append(start)
         url.append(stop)

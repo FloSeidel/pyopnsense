@@ -40,6 +40,18 @@ class OPNClient(object):
         self.base_url = base_url
         self.verify_cert = verify_cert
         self.timeout = timeout
+        self.api_version_pre_25_7 = self.__get_api_version_pre_25_7()
+
+    def __get_api_version_pre_25_7(self):
+        """
+        Checks wether the API Version of the opnsense instance is older than 25.7.
+        Due to a change in api from camleCase to snake_case this can be used to distinguish 
+        between the necessary api calls.
+        (see: https://forum.opnsense.org/index.php?topic=48072.0)
+        """
+        status = self._get("core/firmware/status")
+        core_abi_version = status["product"]["CORE_ABI"]
+        return core_abi_version < "25.7"
 
     def _process_response(self, response, raw=False):
         """Handle the response."""

@@ -33,7 +33,10 @@ class FirewallClient(client.OPNClient):
         :returns: A dict representing the current firewall rules
         :rtype: dict
         """
-        return self._get("firewall/filter/search_rule")
+        if (self.api_version_pre_25_7):
+            return self._get("firewall/filter/searchRule")
+        else:
+            return self._get("firewall/filter/search_rule")
 
     def get_rule_status(self, uuid):
         """Return the current status (enabled/disabled) of a specific firewall
@@ -44,8 +47,10 @@ class FirewallClient(client.OPNClient):
         :returns: A dict representing the current state of a firewall rule
         :rtype: dict
         """
-
-        return self._get(f"firewall/filter/get_rule/{uuid}")
+        if (self.api_version_pre_25_7):
+            return self._get(f"firewall/filter/getRule/{uuid}")
+        else:
+            return self._get(f"firewall/filter/get_rule/{uuid}")
 
     def toggle_rule(self, uuid):
         """Function to toggle a specific rule by uuid
@@ -53,7 +58,10 @@ class FirewallClient(client.OPNClient):
         :returns: A dict representing the new status of the rule
         :rtype: dict
         """
-        return self._post(f"firewall/filter/toggle_rule/{uuid}", "")
+        if (self.api_version_pre_25_7):
+            return self._post(f"firewall/filter/toggleRule/{uuid}", "")
+        else:
+            return self._post(f"firewall/filter/toggle_rule/{uuid}", "")
 
     def apply_rules(self):
         """Function to apply changes to rules."""
