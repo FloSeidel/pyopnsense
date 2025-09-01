@@ -45,20 +45,26 @@ class InterfaceClient(client.OPNClient):
     :param str base_url: The base API endpoint for the OPNsense deployment
     :param int timeout: The timeout in seconds for API requests
     """
+    
+    def __get_ndp_uri(self):
+        if (self.api_version_pre_25_7):
+            return "diagnostics/interface/getNdp"
+        else:
+            return "diagnostics/interface/get_ndp"
 
+    def __get_arp_uri(self):
+        if (self.api_version_pre_25_7):
+            return "diagnostics/interface/getArp"
+        else:
+            return "diagnostics/interface/get_arp"
+ 
     def get_ndp(self):
         """Get NDP table for router."""
-        if (self.api_version_pre_25_7):
-            return self._get("diagnostics/interface/getNdp")
-        else: 
-            return self._get("diagnostics/interface/get_ndp")
+        return self._get(self.__get_ndp_uri)
 
     def get_arp(self):
         """Get ARP table for router."""
-        if (self.api_version_pre_25_7):
-            return self._get("diagnostics/interface/getArp")
-        else: 
-            return self._get("diagnostics/interface/get_arp")
+        return self._get(self.__get_arp_uri())
 
 
 class NetworkInsightClient(client.OPNClient):
@@ -69,31 +75,43 @@ class NetworkInsightClient(client.OPNClient):
     :param str base_url: The base API endpoint for the OPNsense deployment
     :param int timeout: The timeout in seconds for API requests
     """
+        
+    def __get_interfaces_uri(self):
+        if (self.api_version_pre_25_7):
+            return "diagnostics/networkinsight/getinterfaces"
+        else:
+            return "diagnostics/networkinsight/get_interfaces"
+    
+    def __get_services_uri(self):
+        if (self.api_version_pre_25_7):
+            return "diagnostics/networkinsight/getservices"
+        else:
+            return "diagnostics/networkinsight/get_services"
+    
+    def __get_protocols_uri(self):
+        if (self.api_version_pre_25_7):
+            return "diagnostics/networkinsight/getprotocols"
+        else:
+            return "diagnostics/networkinsight/get_protocols"
+
+    def __get_timeserie_uri(self):
+        return "diagnostics/networkinsight/timeserie"
 
     def get_interfaces(self):
         """Return the available interfaces."""
-        if (self.api_version_pre_25_7):
-            return self._get("diagnostics/networkinsight/getinterfaces")
-        else:
-            return self._get("diagnostics/networkinsight/get_interfaces")
+        return self._get(self.__get_interfaces_uri)
 
     def get_services(self):
         """Return the available services."""
-        if (self.api_version_pre_25_7):
-            return self._get("diagnostics/networkinsight/getservices")
-        else:        
-            return self._get("diagnostics/networkinsight/get_services")
+        return self._get(self.__get_services_uri)
 
     def get_protocols(self):
         """Return the protocols."""
-        if (self.api_version_pre_25_7):
-            return self._get("diagnostics/networkinsight/getprotocols")
-        else:
-            return self._get("diagnostics/networkinsight/get_protocols")
+        return self._get(self.__get_protocols_uri)
 
     def get_timeserie(self):
         """Return the time serie."""
-        return self._get("diagnostics/networkinsight/timeserie")
+        return self._get(self.__get_timeserie_uri)
 
 
 class SystemHealthClient(client.OPNClient):
@@ -105,18 +123,27 @@ class SystemHealthClient(client.OPNClient):
     :param int timeout: The timeout in seconds for API requests
     """
 
+    def __get_health_list_uri(self):
+        if (self.api_version_pre_25_7):
+            return "diagnostics/systemhealth/getRRDlist"
+        else:
+            return "diagnostics/systemhealth/get_rrd_list"
+
+    def __get_health_data_uri(self):
+        if (self.api_version_pre_25_7):
+            return "diagnostics/systemhealth/getSystemHealth"
+        else:
+            return "diagnostics/systemhealth/get_system_health"
+
     def get_health_list(self):
         """Return the health list."""
-        if (self.api_version_pre_25_7):
-            return self._get("diagnostics/systemhealth/getRRDlist")
-        else:
-            return self._get("diagnostics/systemhealth/get_rrd_list")
+        return self._get(self.__get_health_list_uri)
 
     def get_health_data(
         self, metric, start=0, stop=0, maxitems=1024, inverse=False, details=False
     ):
         """Return the health data."""
-        url = ["diagnostics/systemhealth/getSystemHealth"] if self.api_version_pre_25_7 else ["diagnostics/systemhealth/get_system_health"]
+        url = self.__get_health_data_uri()
         url.append(urllib.parse.quote(metric))
         url.append(start)
         url.append(stop)
